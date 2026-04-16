@@ -1,0 +1,44 @@
+{
+  "hash": "95315a8d",
+  "configHash": "064545a6",
+  "lockfileHash": "d228cbdf",
+  "browserHash": "5233322a",
+  "optimized": {
+    "framer-motion": {
+      "src": "../../node_modules/.pnpm/framer-motion@12.38.0_react_6ae39dffb6ef709f75ea0e6d16dc1b59/node_modules/framer-motion/dist/es/index.mjs",
+      "file": "framer-motion.js",
+      "fileHash": "1945abb3",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../node_modules/.pnpm/lucide-react@0.471.2_react@19.2.5/node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "68a76827",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/.pnpm/react-dom@19.2.5_react@19.2.5/node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "dcc3c80d",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/.pnpm/react@19.2.5/node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "f6c7ebd1",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/.pnpm/react@19.2.5/node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "fc813f79",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "react-DOFghJpM": {
+      "file": "react-DOFghJpM.js",
+      "isDynamicEntry": false
+    }
+  }
+}
