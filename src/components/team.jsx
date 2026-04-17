@@ -6,7 +6,7 @@ import doc4 from './images/doc 4.PNG'
 import docOther from './images/doc....PNG'
 import hugImage from './images/hug 8.PNG'
 
-function App() {
+function Team() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -177,4 +177,4 @@ function App() {
   )
 }
 
-export default App
+export default Team
