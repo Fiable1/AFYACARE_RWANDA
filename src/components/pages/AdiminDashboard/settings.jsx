@@ -8,6 +8,8 @@ const Settings = () => {
     // In a real app, logic to clear tokens and redirect would go here
   };
 
+
+  
   return (
     <div className="p-8 bg-[#F8F9FA] min-h-screen font-sans max-w-4xl mx-auto">
       <div className="mb-8">

@@ -11,6 +11,8 @@ const Doctors = () => {
     { id: 5, name: "Dr. Lisa Anderson", email: "lisa.a@hospital.com", phone: "(555) 567-8901", specialty: "Dermatologist", experience: "14 years", patients: "289", status: "Active", color: "bg-green-600" },
   ];
 
+  
+
   return (
     <div className="p-8 bg-[#F8F9FA] min-h-screen font-sans">
       {/* Header Section */}
