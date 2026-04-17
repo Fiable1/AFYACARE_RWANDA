@@ -37,7 +37,7 @@ function Register() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit}  className="space-y-6">
           {/* Full Name */}
           <div>
             <label htmlFor="fullName" className="block text-sm font-semibold text-slate-900 mb-3">
@@ -52,7 +52,7 @@ function Register() {
                 placeholder="Dr. John Doe"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3 bg-gray-100 text-slate-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition"
+                className="w-full  pl-12 pr-4 py-3 bg-gray-100 text-slate-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition"
               />
             </div>
           </div>
