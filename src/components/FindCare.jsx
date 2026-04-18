@@ -1,5 +1,19 @@
 
 import { useEffect, useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, ease: "easeOut" }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, type: "spring" } }
+}
 import {
   Activity,
   Building2,
@@ -11,6 +25,7 @@ import {
   SlidersHorizontal,
   Star,
 } from 'lucide-react'
+import ImageWithSkeleton from './ImageLoader'
 
 const FACILITIES = [
   {
@@ -163,12 +178,12 @@ function RwandaMap({ facilities, userLocation, highlightedFacility }) {
             Hospitals are positioned across Rwanda, and your current browser location is marked in real time when permission is allowed.
           </p>
         </div>
-        <div className="rounded-full border border-emerald-200 bg-white/80 px-4 py-2 text-sm font-medium text-emerald-700 backdrop-blur">
+        <div className="rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-medium text-emerald-700 backdrop-blur">
           {userLocation ? 'Live tracking active' : 'Waiting for location'}
         </div>
       </div>
 
-      <div className="relative h-[400px] rounded-[28px] border border-white/60 bg-white/55 p-5 backdrop-blur">
+      <div className="relative h-[400px] rounded-[28px] border border-white/60 bg-white p-5 backdrop-blur">
         <div className="absolute inset-5 rounded-[24px] bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(229,248,236,0.85))]" />
         <div className="absolute inset-8 rounded-[26%_44%_32%_38%/22%_35%_40%_43%] border border-emerald-200/80 bg-[radial-gradient(circle_at_35%_25%,rgba(22,163,74,0.22),transparent_35%),radial-gradient(circle_at_70%_70%,rgba(34,197,94,0.18),transparent_28%),linear-gradient(180deg,#eafff0_0%,#dff6e7_100%)] shadow-inner">
           <div className="absolute inset-[8%] opacity-50">
@@ -299,12 +314,11 @@ export default function FindCare() {
   const nearestFacility = filteredFacilities[0] ?? facilitiesWithDistance[0]
 
   return (
-    <div className="min-h-screen bg-[#fbfdfb] text-slate-900">
-      
-
-      <main id="find-care" className="pt-20 ml-10">
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-[1120px] px-6 py-10 lg:px-8 lg:py-12">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-sky-50 pt-32 pb-16 text-slate-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main id="find-care">
+        <section className="mb-12 text-center">
+          <div className="py-6">
             <h1 className="text-4xl font-semibold tracking-[-0.04em] text-slate-950 lg:text-[3.1rem]">
               Find Hospitals &amp; Clinics
             </h1>
@@ -314,9 +328,9 @@ export default function FindCare() {
           </div>
         </section>
 
-        <section className="bg-[linear-gradient(180deg,#eefaf0_0%,#f9fdf9_72%)]">
-          <div className="mx-auto max-w-[1120px] px-6 py-7 lg:px-8 lg:py-8">
-            <div className="rounded-[28px] border border-white/70 bg-white p-5 shadow-[0_18px_60px_rgba(15,23,42,0.08)] lg:p-6">
+        <section className="mb-12">
+          <div>
+            <div className="rounded-[28px] border border-white/60 bg-white/80 backdrop-blur-md p-5 shadow-xl lg:p-6">
               <div className="grid gap-4 lg:grid-cols-[1.7fr_1fr_0.65fr_0.9fr]">
                 <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-400 shadow-inner">
                   <MapPin className="h-5 w-5 shrink-0" />
@@ -413,7 +427,7 @@ export default function FindCare() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-[1120px] px-6 pb-16 pt-4 lg:px-8">
+        <section className="pb-16">
           <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <p className="text-lg text-slate-600">
               Found <span className="font-semibold text-emerald-700">{filteredFacilities.length}</span> healthcare facilities near you
@@ -431,17 +445,23 @@ export default function FindCare() {
             </div>
           )}
 
-          <div className="grid gap-6">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid gap-6"
+          >
             {filteredFacilities.map((facility) => (
-              <article
+              <motion.article
+                variants={itemVariants}
                 key={facility.id}
-                className="grid overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.07)] md:grid-cols-[350px_1fr]"
+                className="grid overflow-hidden rounded-[28px] border border-white/60 bg-white/80 backdrop-blur-md shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-emerald-400 md:grid-cols-[350px_1fr]"
               >
                 <div className="relative min-h-[280px]">
-                  <img
+                  <ImageWithSkeleton
                     src={facility.image}
                     alt={facility.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full"
                   />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.04),rgba(0,0,0,0.12))]" />
                 </div>
@@ -499,11 +519,12 @@ export default function FindCare() {
                     </button>
                   </div>
                 </div>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </section>
       </main>
+      </div>
     </div>
   )
 }

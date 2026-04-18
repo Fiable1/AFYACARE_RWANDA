@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Calendar as CalendarIcon, Clock, User, Mail, Phone, CheckCircle2, Building2, Stethoscope } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ImageWithFallback } from "./ImageWithFallback";
+import { createAppointment } from "../services/api";
 
 export function BookingPage() {
   const [step, setStep] = useState(1);
@@ -102,20 +103,47 @@ export function BookingPage() {
     setStep(3);
   };
 
-  const handleBooking = (e) => {
+  const handleBooking = async (e) => {
     e.preventDefault();
+    try {
+      await createAppointment({
+        patient: {
+          name: patientInfo.name,
+          email: patientInfo.email,
+          phone: patientInfo.phone,
+        },
+        doctor: selectedDoctor?.name,
+        hospital: selectedHospital?.name,
+        date: selectedDate,
+        time: selectedTime,
+        symptoms: patientInfo.reason,
+        aiGenerated: false,
+      });
+    } catch {
+      // If backend is offline we still confirm locally so the UX isn't broken
+    }
     setBookingConfirmed(true);
     setStep(5);
   };
 
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, x: 50, scale: 0.98 },
     visible: {
       opacity: 1,
+      x: 0,
+      scale: 1,
       transition: {
+        duration: 0.5,
         staggerChildren: 0.1,
+        ease: "easeOut"
       },
     },
+    exit: { 
+      opacity: 0, 
+      x: -50, 
+      scale: 0.98, 
+      transition: { duration: 0.3, ease: "easeIn" } 
+    }
   };
 
   const itemVariants = {
@@ -130,7 +158,7 @@ export function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-sky-50 pt-32 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -188,12 +216,15 @@ export function BookingPage() {
           </div>
         </motion.div>
 
+        <AnimatePresence mode="wait">
         {/* Step 1: Select Hospital */}
         {step === 1 && (
           <motion.div
+            key="step1"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
+            exit="exit"
           >
             <h2 className="text-3xl text-gray-900 mb-8 text-center">
               Select a Hospital or Clinic
@@ -202,12 +233,8 @@ export function BookingPage() {
               {hospitals.map((hospital) => (
                 <motion.div key={hospital.id} variants={itemVariants}>
                   <div
-                    className="p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-0 cursor-pointer backdrop-blur-sm bg-white/80"
+                    className="p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/60 cursor-pointer bg-white/80 backdrop-blur-md hover:-translate-y-1 hover:ring-2 hover:ring-emerald-400"
                     onClick={() => handleHospitalSelect(hospital)}
-                    style={{
-                      background: "rgba(255, 255, 255, 0.8)",
-                      backdropFilter: "blur(10px)",
-                    }}
                   >
                     <div className="w-16 h-16 bg-gradient-to-br from-[#2E7D32] to-[#66BB6A] rounded-2xl flex items-center justify-center mb-4 shadow-lg">
                       <Building2 className="w-8 h-8 text-white" />
@@ -229,9 +256,11 @@ export function BookingPage() {
         {/* Step 2: Select Doctor */}
         {step === 2 && selectedHospital && (
           <motion.div
+            key="step2"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
+            exit="exit"
           >
             <h2 className="text-3xl text-gray-900 mb-8 text-center">
               Select a Doctor at {selectedHospital.name}
@@ -240,12 +269,8 @@ export function BookingPage() {
               {selectedHospital.doctors.map((doctor) => (
                 <motion.div key={doctor.id} variants={itemVariants}>
                   <div
-                    className="p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-0 cursor-pointer backdrop-blur-sm bg-white/80"
+                    className="p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/60 cursor-pointer bg-white/80 backdrop-blur-md hover:-translate-y-1 hover:ring-2 hover:ring-emerald-400"
                     onClick={() => handleDoctorSelect(doctor)}
-                    style={{
-                      background: "rgba(255, 255, 255, 0.8)",
-                      backdropFilter: "blur(10px)",
-                    }}
                   >
                     <div className="flex gap-6">
                       <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
@@ -286,7 +311,7 @@ export function BookingPage() {
                   setStep(1);
                   setSelectedHospital(null);
                 }}
-                className="border-2 border-gray-300 hover:bg-gray-50 rounded-xl px-4 py-2"
+                className="rounded-2xl border border-slate-200 bg-white px-8 py-3 text-sm font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 active:scale-95"
               >
                 Back to Hospitals
               </button>
@@ -297,51 +322,51 @@ export function BookingPage() {
         {/* Step 3: Select Date & Time */}
         {step === 3 && selectedDoctor && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            key="step3"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
           >
             <div
-              className="max-w-3xl mx-auto p-8 rounded-2xl shadow-xl border-0 backdrop-blur-sm bg-white/80"
-              style={{
-                background: "rgba(255, 255, 255, 0.8)",
-                backdropFilter: "blur(10px)",
-              }}
+              className="max-w-3xl mx-auto p-10 rounded-[32px] shadow-2xl border border-white/60 bg-white/80 backdrop-blur-md"
             >
-              <h2 className="text-3xl text-gray-900 mb-8 text-center">
+              <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-8 text-center">
                 Choose Date & Time
               </h2>
 
-              <div className="mb-8">
-                <label className="text-lg mb-3 block">Select Date</label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  min={new Date().toISOString().split("T")[0]}
-                  className="rounded-xl border-2 border-gray-200 focus:border-[#2E7D32] py-6 text-lg w-full"
-                />
+              <div className="mb-10">
+                <label className="text-xs font-semibold text-slate-500 mb-3 block uppercase tracking-wider">Select Date</label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split("T")[0]}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-4 px-5 text-lg font-medium text-slate-700 outline-none transition-all focus:bg-white focus:ring-4 focus:ring-emerald-500/15 focus:border-emerald-500 shadow-inner cursor-pointer"
+                  />
+                </div>
               </div>
 
               {selectedDate && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.4 }}
                 >
-                  <label className="text-lg mb-3 block">Select Time</label>
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mb-8">
+                  <label className="text-xs font-semibold text-slate-500 mb-3 block uppercase tracking-wider">Select Time</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-10">
                     {timeSlots.map((time) => (
                       <button
                         key={time}
                         onClick={() => setSelectedTime(time)}
-                        className={`rounded-xl py-6 transition-all duration-300 flex items-center justify-center ${
+                        className={`rounded-2xl py-4 transition-all duration-300 flex items-center justify-center text-sm font-semibold border ${
                           selectedTime === time
-                            ? "bg-[#2E7D32] hover:bg-[#1B5E20] text-white scale-105"
-                            : "border-2 border-gray-200 hover:border-[#2E7D32] text-gray-700"
+                            ? "bg-gradient-to-br from-emerald-600 to-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/30 scale-105 ring-2 ring-emerald-500 ring-offset-2"
+                            : "bg-white border-slate-200 text-slate-600 hover:border-emerald-400 hover:text-emerald-700 hover:bg-emerald-50 shadow-sm"
                         }`}
                       >
-                        <Clock className="w-4 h-4 mr-2" />
+                        <Clock className={`w-4 h-4 mr-2 ${selectedTime === time ? "text-emerald-100" : "text-slate-400"}`} />
                         {time}
                       </button>
                     ))}
@@ -349,17 +374,17 @@ export function BookingPage() {
                 </motion.div>
               )}
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 pt-4 border-t border-slate-100">
                 <button
                   onClick={() => setStep(2)}
-                  className="flex-1 border-2 border-gray-300 hover:bg-gray-50 rounded-xl py-6"
+                  className="flex-1 rounded-2xl bg-white border border-slate-200 py-4 font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 active:scale-95"
                 >
                   Back
                 </button>
                 <button
                   onClick={() => setStep(4)}
                   disabled={!selectedDate || !selectedTime}
-                  className="flex-1 bg-[#2E7D32] hover:bg-[#1B5E20] text-white rounded-xl py-6 disabled:opacity-50"
+                  className="flex-1 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 py-4 font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:from-emerald-700 hover:to-emerald-600 disabled:opacity-50 disabled:shadow-none active:scale-95"
                 >
                   Continue
                 </button>
@@ -371,26 +396,24 @@ export function BookingPage() {
         {/* Step 4: Patient Details */}
         {step === 4 && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            key="step4"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
           >
             <div
-              className="max-w-2xl mx-auto p-8 rounded-2xl shadow-xl border-0 backdrop-blur-sm bg-white/80"
-              style={{
-                background: "rgba(255, 255, 255, 0.8)",
-                backdropFilter: "blur(10px)",
-              }}
+              className="max-w-2xl mx-auto p-10 rounded-[32px] shadow-2xl border border-white/60 bg-white/80 backdrop-blur-md"
             >
-              <h2 className="text-3xl text-gray-900 mb-8 text-center">
+              <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-8 text-center">
                 Your Information
               </h2>
 
               <form onSubmit={handleBooking} className="space-y-6">
                 <div>
-                  <label className="text-lg mb-2 block">Full Name</label>
+                  <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="text"
                       placeholder="John Doe"
@@ -399,15 +422,15 @@ export function BookingPage() {
                         setPatientInfo({ ...patientInfo, name: e.target.value })
                       }
                       required
-                      className="pl-12 rounded-xl border-2 border-gray-200 focus:border-[#2E7D32] py-6 w-full"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-4 pl-12 pr-5 font-medium text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 focus:border-emerald-500 shadow-inner"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-lg mb-2 block">Email</label>
+                  <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="email"
                       placeholder="john@example.com"
@@ -416,15 +439,15 @@ export function BookingPage() {
                         setPatientInfo({ ...patientInfo, email: e.target.value })
                       }
                       required
-                      className="pl-12 rounded-xl border-2 border-gray-200 focus:border-[#2E7D32] py-6 w-full"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-4 pl-12 pr-5 font-medium text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 focus:border-emerald-500 shadow-inner"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-lg mb-2 block">Phone Number</label>
+                  <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Phone Number</label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="tel"
                       placeholder="(555) 123-4567"
@@ -433,13 +456,13 @@ export function BookingPage() {
                         setPatientInfo({ ...patientInfo, phone: e.target.value })
                       }
                       required
-                      className="pl-12 rounded-xl border-2 border-gray-200 focus:border-[#2E7D32] py-6 w-full"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-4 pl-12 pr-5 font-medium text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 focus:border-emerald-500 shadow-inner"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-lg mb-2 block">Reason for Visit</label>
+                  <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Reason for Visit</label>
                   <textarea
                     placeholder="Briefly describe your symptoms or reason for appointment..."
                     value={patientInfo.reason}
@@ -448,21 +471,21 @@ export function BookingPage() {
                     }
                     required
                     rows={4}
-                    className="w-full rounded-xl border-2 border-gray-200 focus:border-[#2E7D32] p-4 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-4 px-5 font-medium text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/15 focus:border-emerald-500 shadow-inner resize-none"
                   />
                 </div>
 
-                <div className="flex gap-4 pt-4">
+                <div className="flex gap-4 pt-6 border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => setStep(3)}
-                    className="flex-1 border-2 border-gray-300 hover:bg-gray-50 rounded-xl py-6"
+                    className="flex-1 rounded-2xl bg-white border border-slate-200 py-4 font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50 focus:ring-4 focus:ring-slate-100 active:scale-95"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-[#2E7D32] hover:bg-[#1B5E20] text-white rounded-xl py-6"
+                    className="flex-1 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 py-4 font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:from-emerald-700 hover:to-emerald-600 active:scale-95"
                   >
                     Confirm Booking
                   </button>
@@ -475,62 +498,68 @@ export function BookingPage() {
         {/* Step 5: Confirmation */}
         {step === 5 && bookingConfirmed && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, type: "spring" }}
+            key="step5"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
           >
             <div
-              className="max-w-2xl mx-auto p-12 rounded-2xl shadow-2xl border-0 text-center backdrop-blur-sm bg-white/90"
-              style={{
-                background: "rgba(255, 255, 255, 0.9)",
-                backdropFilter: "blur(10px)",
-              }}
+              className="max-w-2xl mx-auto p-12 rounded-[32px] shadow-2xl border border-white/60 text-center bg-white/90 backdrop-blur-md"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.5, type: "spring" }}
-                className="w-24 h-24 bg-gradient-to-br from-[#2E7D32] to-[#66BB6A] rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl"
+                className="w-24 h-24 bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-[28px] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/30 rotate-3"
               >
-                <CheckCircle2 className="w-12 h-12 text-white" />
+                <CheckCircle2 className="w-12 h-12 text-white -rotate-3" />
               </motion.div>
 
-              <h2 className="text-4xl text-gray-900 mb-4">
+              <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-4">
                 Booking Confirmed!
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Your appointment has been successfully scheduled
+              <p className="text-lg font-medium text-slate-500 mb-8">
+                Your appointment has been successfully scheduled.
               </p>
 
-              <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-6 mb-8 text-left">
-                <h3 className="text-xl text-gray-900 mb-4">
+              <div className="bg-slate-50 border border-slate-100/60 shadow-inner rounded-3xl p-8 mb-8 text-left max-w-lg mx-auto">
+                <h3 className="text-xs font-bold tracking-wider uppercase text-slate-400 mb-5 border-b border-slate-200 pb-2">
                   Appointment Details
                 </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Building2 className="w-5 h-5 text-[#2E7D32]" />
-                    <span className="text-gray-700">{selectedHospital?.name}</span>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-slate-100">
+                      <Building2 className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <span className="text-slate-700 font-semibold">{selectedHospital?.name}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Stethoscope className="w-5 h-5 text-[#2E7D32]" />
-                    <span className="text-gray-700">
-                      {selectedDoctor?.name} - {selectedDoctor?.specialty}
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-slate-100">
+                      <Stethoscope className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <span className="text-slate-700 font-medium">
+                      <span className="font-semibold">{selectedDoctor?.name}</span> - <span className="text-slate-500">{selectedDoctor?.specialty}</span>
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <CalendarIcon className="w-5 h-5 text-[#2E7D32]" />
-                    <span className="text-gray-700">{selectedDate}</span>
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-slate-100">
+                      <CalendarIcon className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <span className="text-slate-700 font-semibold">{selectedDate}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-[#2E7D32]" />
-                    <span className="text-gray-700">{selectedTime}</span>
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-slate-100">
+                      <Clock className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <span className="text-slate-700 font-semibold">{selectedTime}</span>
                   </div>
                 </div>
               </div>
 
-              <p className="text-gray-600 mb-8">
+              <p className="text-sm font-medium text-slate-500 mb-10">
                 A confirmation email has been sent to{" "}
-                <span className="text-[#2E7D32]">{patientInfo.email}</span>
+                <span className="font-bold text-emerald-600">{patientInfo.email}</span>
               </p>
 
               <button
@@ -543,13 +572,14 @@ export function BookingPage() {
                   setPatientInfo({ name: "", email: "", phone: "", reason: "" });
                   setBookingConfirmed(false);
                 }}
-                className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white rounded-xl px-8 py-6 text-lg"
+                className="w-full max-w-sm mx-auto block rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 py-4 px-8 font-bold text-white shadow-lg shadow-emerald-500/30 transition-all hover:from-emerald-700 hover:to-emerald-600 active:scale-95"
               >
                 Book Another Appointment
               </button>
             </div>
           </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -1,12 +1,11 @@
-import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import connectDB from './config/database.js';
 import errorHandler from './middleware/errorHandler.js';
-
-// Load env vars
-dotenv.config();
 
 // Import routes
 import authRoutes from './routes/authRoutes.js';

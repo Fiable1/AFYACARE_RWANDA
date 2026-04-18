@@ -20,7 +20,7 @@
         </div>
 
         <div className="absolute left-1/2 top-14 h-28 w-20 -translate-x-1/2 rounded-[28px] bg-orange-400 shadow-xl shadow-orange-400/25">
-          <div className="absolute left-1/2 top-4 h-12 w-12 -translate-x-1/2 rounded-2xl bg-white/95" />
+          <div className="absolute left-1/2 top-4 h-12 w-12 -translate-x-1/2 rounded-2xl bg-white" />
         </div>
 
         <div className="absolute left-[3%] top-[39%] h-14 w-8 rotate-[16deg] rounded-full bg-orange-400" />
@@ -31,14 +31,14 @@
         <div className="absolute bottom-0 right-[27%] h-20 w-8 rounded-full bg-orange-400" />
       </div>
 
-      <div className="absolute left-[27%] top-[12%] rounded-2xl border border-white/80 bg-white/90 px-3 py-2 shadow-sm backdrop-blur">
+      <div className="absolute left-[27%] top-[12%] rounded-2xl border border-white/80 bg-white px-3 py-2 shadow-sm backdrop-blur">
         <div className="flex items-center gap-2 text-[11px] font-semibold text-slate-500">
           <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
           Live assistance
         </div>
       </div>
 
-      <div className="absolute left-[23%] top-[63%] rounded-2xl border border-white/80 bg-white/90 px-4 py-3 shadow-md backdrop-blur">
+      <div className="absolute left-[23%] top-[63%] rounded-2xl border border-white/80 bg-white px-4 py-3 shadow-md backdrop-blur">
         <div className="text-xs font-semibold text-slate-800">Patient check-in</div>
         <div className="mt-1 text-[11px] text-slate-500">Vitals synced and ready</div>
       </div>

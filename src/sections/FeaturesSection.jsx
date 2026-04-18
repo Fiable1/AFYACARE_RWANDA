@@ -20,7 +20,7 @@ const FeaturesSection = () => {
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="group relative rounded-3xl border border-slate-100 bg-white/50 p-8 shadow-glass transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-float"
+              className="group relative rounded-3xl border border-slate-100 bg-white p-8 shadow-glass transition-all duration-300 hover:-translate-y-2 hover:bg-white hover:shadow-float"
             >
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
                 <feature.icon className="h-6 w-6" />

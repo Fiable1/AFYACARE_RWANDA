@@ -59,11 +59,21 @@
   --page-sky: rgba(117, 196, 255, 0.28);
   --page-warm: rgba(255, 211, 163, 0.2);
   --page-line: rgba(36, 136, 65, 0.16);
+  --grad-top-left: rgba(233, 247, 238, 0.8);
+  --grad-bg-start: #ffffff;
+  --grad-bg-end: #f6fbff;
+  --panel-border: rgba(117, 196, 255, 0.24);
+  --panel-bg-1: rgba(255, 255, 255, 0.84);
+  --panel-bg-2: rgba(230, 245, 255, 0.54);
+  --ambient-wash-1: rgba(109, 219, 155, 0.24);
+  --ambient-wash-2: rgba(117, 196, 255, 0.24);
+  --ambient-wash-3: rgba(224, 245, 255, 0.18);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 
 html {
   scroll-behavior: smooth;
@@ -73,8 +83,8 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(233, 247, 238, 0.8), transparent 22%),
-    linear-gradient(180deg, #ffffff 0%, #ffffff 68%, #f6fbff 100%);
+    radial-gradient(circle at top left, var(--grad-top-left), transparent 22%),
+    linear-gradient(180deg, var(--grad-bg-start) 0%, var(--grad-bg-start) 68%, var(--grad-bg-end) 100%);
 }
 
 * {
@@ -92,18 +102,18 @@ body {
 
 .ambient-wash {
   background:
-    radial-gradient(circle at 18% 20%, rgba(109, 219, 155, 0.24), transparent 30%),
-    radial-gradient(circle at 82% 26%, rgba(117, 196, 255, 0.24), transparent 28%),
-    radial-gradient(circle at 50% 80%, rgba(224, 245, 255, 0.18), transparent 28%);
+    radial-gradient(circle at 18% 20%, var(--ambient-wash-1), transparent 30%),
+    radial-gradient(circle at 82% 26%, var(--ambient-wash-2), transparent 28%),
+    radial-gradient(circle at 50% 80%, var(--ambient-wash-3), transparent 28%);
   animation: pulseWash 10s ease-in-out infinite;
 }
 
 .ambient-panel {
-  border: 1px solid rgba(117, 196, 255, 0.24);
+  border: 1px solid var(--panel-border);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(230, 245, 255, 0.54)),
+    linear-gradient(180deg, var(--panel-bg-1), var(--panel-bg-2)),
     linear-gradient(90deg, rgba(117, 196, 255, 0.12), rgba(109, 219, 155, 0.08));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.58), 0 0 40px rgba(117, 196, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 40px rgba(117, 196, 255, 0.08); /* Adjusted inset shadow for dark mode compatibility */
   backdrop-filter: blur(6px);
   animation: floatPanel 12s ease-in-out infinite;
 }
@@ -113,8 +123,8 @@ body {
   position: absolute;
   inset: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(117, 196, 255, 0.24);
-  background-image: linear-gradient(to right, rgba(117, 196, 255, 0.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(117, 196, 255, 0.14) 1px, transparent 1px);
+  border: 1px solid var(--panel-border);
+  background-image: linear-gradient(to right, var(--panel-border) 1px, transparent 1px), linear-gradient(to bottom, var(--panel-border) 1px, transparent 1px);
   background-size: 22px 22px;
   opacity: 0.88;
 }
@@ -317,6 +327,53 @@ body {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-size: 800px 104px;
+  animation: shimmer 1.2s linear infinite forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation-fill-mode: forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.duration-500 {
+  animation-duration: 500ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ambient-grid,
   .ambient-wash,
@@ -325,7 +382,10 @@ body {
   .ambient-ring,
   .ambient-pulse-dot,
   .ambient-ecg-line,
-  .ambient-marker {
+  .ambient-marker,
+  tr[style*="animation"] {
     animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

@@ -52,10 +52,10 @@ const SideChatBoard = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-screen w-full md:w-[400px] bg-white/90 backdrop-blur-xl shadow-2xl flex flex-col border-l border-brand-100"
+            className="fixed top-0 right-0 h-screen w-full md:w-[400px] bg-white backdrop-blur-xl shadow-2xl flex flex-col border-l border-brand-100"
           >
             {/* Header */}
-            <div className="p-6 border-b border-brand-50 flex items-center justify-between bg-white/50">
+            <div className="p-6 border-b border-brand-50 flex items-center justify-between bg-white">
               <div className="flex items-center gap-4">
                 <div className="relative">
                   <div className="w-12 h-12 rounded-full bg-brand-50 flex items-center justify-center overflow-hidden border-2 border-brand-100">
@@ -105,7 +105,7 @@ const SideChatBoard = () => {
             </div>
 
             {/* Bottom Input Area */}
-            <div className="p-6 bg-white/80 border-t border-brand-50 backdrop-blur-md mb-2">
+            <div className="p-6 bg-white border-t border-brand-50 backdrop-blur-md mb-2">
               <div className="flex items-center gap-2">
                 <button className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors">
                   <Paperclip size={20} />

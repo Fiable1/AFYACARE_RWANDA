@@ -19,7 +19,7 @@ const WhyChooseSection = () => {
             <div className="mt-12 space-y-8">
               {trustItems.map((item) => (
                 <div key={item.title} className="flex gap-6">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white backdrop-blur-md">
                     <item.icon className="h-6 w-6 text-brand-300" />
                   </div>
                   <div>
@@ -33,8 +33,8 @@ const WhyChooseSection = () => {
           
           <div className="relative hidden lg:block">
             <div className="absolute -inset-4 rounded-full bg-brand-400/20 blur-3xl" />
-            <div className="relative aspect-square rounded-[32px] bg-gradient-to-br from-brand-800 to-brand-950 p-1 shadow-2xl">
-              <div className="h-full w-full rounded-[30px] bg-[url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center opacity-60 mix-blend-overlay"></div>
+            <div className="relative aspect-square rounded-[32px] bg-white/10 p-2 shadow-2xl backdrop-blur-sm border border-white/20">
+              <div className="h-full w-full rounded-[24px] bg-[url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center shadow-inner"></div>
             </div>
           </div>
         </div>

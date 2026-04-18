@@ -134,7 +134,7 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
       <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col lg:flex-row">
-        <aside className="flex min-h-full flex-col w-full border-b border-slate-200 bg-white/95 px-5 py-6 shadow-sm lg:w-[280px] lg:border-r lg:border-b-0 lg:px-5 lg:py-10">
+        <aside className="flex min-h-full flex-col w-full border-b border-slate-200 bg-white px-5 py-6 shadow-sm lg:w-[280px] lg:border-r lg:border-b-0 lg:px-5 lg:py-10">
           <div className="flex items-center gap-3 text-brand-700">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-600 text-lg font-bold text-white">M</div>
             <div>
